@@ -68,3 +68,104 @@ void getLidarData1( TF* Lidar1)
       i++;
     }
 } 
+
+
+void Action_detection()
+{
+    
+    getLidarData(&Lidar)  ;
+    getLidarData1(&Lidar1)  ;
+
+  if(Lidar.distance > (Radarinit*high) && Lidar1.distance < (Radarinit*Low) )
+  { 
+    State = 0x01;
+  }
+  if(Lidar.distance < (Radarinit*Low) && Lidar1.distance < (Radarinit*Low) )
+  { 
+    State = 0x11;
+  }
+  if(Lidar.distance < (Radarinit*Low) && Lidar1.distance > (Radarinit*high) )
+  { 
+    State = 0x10;
+  }
+   if(Lidar.distance > (Radarinit*high) && Lidar1.distance > (Radarinit*high) )
+  { 
+    State = 0x00;
+  }
+
+
+  if(State!=Current_State) //状态发生改变
+  {
+    BeLast_State = last_State;   //存储上上次
+    last_State = Current_State;  //存储上次
+    Current_State = State;       //存储当前，用作实时比较
+  }
+
+  if (BeLast_State==0x01 && last_State == 0x11  && Current_State ==0x10)   //发生了增加动作
+  {
+    CoverSumIN ++;
+    BeLast_State  = 0x00 ;
+    last_State    = 0x00  ;
+    Current_State = 0x00;
+  }
+
+  if (BeLast_State==0x10 && last_State == 0x11  && Current_State ==0x01)   //发生了减少动作
+  {
+    CoverSumOut ++;
+    BeLast_State  = 0x00 ;
+    last_State    = 0x00 ;
+    Current_State = 0x00 ;
+  }
+}
+
+
+bool  Errorback()
+{
+    if(TIM_refer%2 == 0) //检查传感器错误频率
+   {
+        if(Lidar.receiveComplete == false)          //接收失败
+        { 
+          Errornum++;
+          if(Errornum>3) //两秒未检测到雷达
+          {
+              
+              Serial.println();
+             
+              Display.drawString(0, 20, "Lidar1 Error");  //X,Y,内容
+              Display.display();  //将缓冲区写入内存
+              ErrorFlag = 1;
+          }
+        }
+        else
+        {
+          Errornum = 0;
+        }
+
+        if(Lidar1.receiveComplete == false)          //接收失败
+        { 
+          Errornum1++;
+          if(Errornum1>3) //两秒未检测到雷达
+          { 
+              
+              Display.drawString(0, 40, "Lidar2 Error");  //X,Y,内容
+              Display.display();  //将缓冲区写入内存
+            ErrorFlag = 1;
+          }
+        }
+        else
+        {
+          Errornum1 = 0;
+        }
+
+        if(Errornum == 0 && Errornum1 == 0)
+          ErrorFlag = 0;
+         
+       TIM_refer++;    
+   } 
+    Serial.print(Errornum);
+     Serial.print("    ");
+     Serial.print(Errornum1);
+     Serial.println();
+     return ErrorFlag ;
+}
+

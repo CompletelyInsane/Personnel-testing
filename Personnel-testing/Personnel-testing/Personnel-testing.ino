@@ -6,9 +6,9 @@
 #include "date.h"
 #include <Wire.h>               
 #include "HT_SSD1306Wire.h"
+#include "oled.h"
 
 
-int  CoverCou = 0, CoverSum = 0,Radarinit = 0;
 char str[20]; // 为字符串分配足够的空间
 hw_timer_t* Timer= NULL;              //定义存放定时器的指针  这个名字不能叫做timer,会和LoRa库里边冲突
 SSD1306Wire  Display(0x3c, 500000, SDA_OLED, SCL_OLED, GEOMETRY_128_64, RST_OLED); // addr , freq , i2c group , resolution , rst  oled初始化参数
@@ -27,49 +27,34 @@ void setup() {
   timerAttachInterrupt(Timer, onTimer, true);  //定时器地址指针，中断函数，触发类型
   timerAlarmWrite(Timer, 1000000, true);       //us，自动重装载 
   timerAlarmEnable(Timer);                     //打开定时器
-  
+ 
 
     Serial.begin(115200);
     Display.init(); //oled 初始化
     Display.setFont(ArialMT_Plain_16);//设置字体
-    while(Lidar.receiveComplete == false )
+    
+    while(Lidar.receiveComplete == false )    //规定一个检测的范围
        getLidarData(&Lidar)  ; 
     Radarinit = Lidar.distance;
 }
 
 void loop() {
   // put your main code here, to run repeatedly:
-  getLidarData(&Lidar)  ;
-  getLidarData1(&Lidar1)  ;
+   
+Action_detection(); //动作检测
 
-  if(Lidar.distance < (Radarinit-20))
-  {           
-     while(Lidar.distance < (Radarinit-20))
-     {
-         getLidarData(&Lidar)  ;
-         delay(10);
-         CoverCou ++;
-     }
-     if(CoverCou > 18)  //遮挡时间足够，才计数
-     {
-        CoverSum ++;
-     }
-       CoverCou  = 0 ;
+if(!Errorback())
+   oled_display();     //oled显示
 
-  }
-  Display.drawString(0, 0, "Number :");  //X,Y,内容
-  sprintf(str, "%d", CoverSum);
-  Display.drawString(70, 0, str);  //X,Y,内容
-  Display.display();  //将缓冲区写入内存
 
-  sprintf(str, "%d",  Lidar.distance);
-  Display.drawString(45, 20, str);  //X,Y,内容
-  Display.display();  //将缓冲区写入内存
-  
-  sprintf(str, "%d",  Lidar1.distance);
-  Display.drawString(45, 40, str);  //X,Y,内容
-  Display.display();  //将缓冲区写入内存
-   Display.clear();
+//Errorback();
+// if(!Errorback())
+// {
+  // Serial.print(); 
+  // Serial.println();
+// }
+
+
 }
 
 
@@ -78,7 +63,11 @@ void loop() {
 //定时器中断函数
 void IRAM_ATTR onTimer()
 {
-   
+  TIM_refer++;   //报错检测间隔参数
+  if(TIM_refer>65536)//限制范围
+   {
+    TIM_refer = 0;
+   }
 }
 
 
