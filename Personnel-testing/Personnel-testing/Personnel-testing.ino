@@ -32,10 +32,14 @@ void setup() {
     Serial.begin(115200);
     Display.init(); //oled 初始化
     Display.setFont(ArialMT_Plain_16);//设置字体
-    
-    while(Lidar.receiveComplete == false )    //规定一个检测的范围
+
+    while(Lidar.receiveComplete == false )    //
+    {
        getLidarData(&Lidar)  ; 
-    Radarinit = Lidar.distance;
+       Display.drawString(0, 20, "Lidar1 Error");  //X,Y,内容
+       Display.display();  //将缓冲区写入内存
+    }
+
 }
 
 void loop() {
@@ -50,8 +54,7 @@ if(!Errorback())
 //Errorback();
 // if(!Errorback())
 // {
-  // Serial.print(); 
-  // Serial.println();
+ 
 // }
 
 

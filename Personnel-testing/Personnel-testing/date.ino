@@ -73,22 +73,38 @@ void getLidarData1( TF* Lidar1)
 void Action_detection()
 {
     
-    getLidarData(&Lidar)  ;
-    getLidarData1(&Lidar1)  ;
+    getLidarData(&Lidar);
+    getLidarData1(&Lidar1);
 
-  if(Lidar.distance > (Radarinit*high) && Lidar1.distance < (Radarinit*Low) )
+  // if( abs(Lidar.distance - idar1.distance ) < 5 )
+  // {
+   if( abs(Lidar.distance - Radarinit) > 5 || abs(Lidar1.distance - Radarinit1) > 5)
+      ReferenceNum --;
+  else 
+       ReferenceNum = 100;
+
+
+   if(ReferenceNum < 1)
+    {
+      Radarinit = Lidar.distance;
+      Radarinit1 = Lidar1.distance;
+      ReferenceNum = 100;
+    }
+ 
+
+  if(Lidar.distance > (Radarinit*high) && Lidar1.distance < (Radarinit1*Low) )
   { 
     State = 0x01;
   }
-  if(Lidar.distance < (Radarinit*Low) && Lidar1.distance < (Radarinit*Low) )
+  if(Lidar.distance < (Radarinit*Low) && Lidar1.distance < (Radarinit1*Low) )
   { 
     State = 0x11;
   }
-  if(Lidar.distance < (Radarinit*Low) && Lidar1.distance > (Radarinit*high) )
+  if(Lidar.distance < (Radarinit*Low) && Lidar1.distance > (Radarinit1*high) )
   { 
     State = 0x10;
   }
-   if(Lidar.distance > (Radarinit*high) && Lidar1.distance > (Radarinit*high) )
+   if(Lidar.distance > (Radarinit*high) && Lidar1.distance > (Radarinit1*high) )
   { 
     State = 0x00;
   }
@@ -100,8 +116,24 @@ void Action_detection()
     last_State = Current_State;  //存储上次
     Current_State = State;       //存储当前，用作实时比较
   }
+       Serial.print(Radarinit); 
+  Serial.print("        ");
+       Serial.print(ReferenceNum); 
+  Serial.print("        ");
+      Serial.print(BeLast_State);
+     Serial.print("    ");
+     Serial.print(last_State);
+     Serial.print("     ");
+      Serial.print(Current_State);
+      Serial.print("        ");
+       Serial.print(Lidar.distance ); 
+  Serial.print("        ");
+   Serial.print(Lidar1.distance ); 
+  Serial.print("        ");
+     Serial.println();
 
-  if (BeLast_State==0x01 && last_State == 0x11  && Current_State ==0x10)   //发生了增加动作
+
+  if (BeLast_State==0x01 && last_State == 0x11  && Current_State ==0x10)   //发生了进门动作
   {
     CoverSumIN ++;
     BeLast_State  = 0x00 ;
@@ -109,7 +141,7 @@ void Action_detection()
     Current_State = 0x00;
   }
 
-  if (BeLast_State==0x10 && last_State == 0x11  && Current_State ==0x01)   //发生了减少动作
+  if (BeLast_State==0x10 && last_State == 0x11  && Current_State ==0x01)   //发生了出门动作
   {
     CoverSumOut ++;
     BeLast_State  = 0x00 ;
@@ -162,10 +194,10 @@ bool  Errorback()
          
        TIM_refer++;    
    } 
-    Serial.print(Errornum);
-     Serial.print("    ");
-     Serial.print(Errornum1);
-     Serial.println();
+    // Serial.print(Errornum);
+    //  Serial.print("    ");
+    //  Serial.print(Errornum1);
+    //  Serial.println();
      return ErrorFlag ;
 }
 
