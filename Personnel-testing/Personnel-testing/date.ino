@@ -120,6 +120,8 @@ void Action_detection()
   if (BeLast_State==0x01 && last_State == 0x11  && Current_State ==0x10)   //发生了进门动作
   {
     CoverSumIN ++;
+    EEPROM.write(20, CoverSumIN);delay(1);  
+    EEPROM.commit();delay(1) ;
     BeLast_State  = 0x00 ;
     last_State    = 0x00  ;
     Current_State = 0x00;
@@ -128,6 +130,8 @@ void Action_detection()
   if (BeLast_State==0x10 && last_State == 0x11  && Current_State ==0x01)   //发生了出门动作
   {
     CoverSumOut ++;
+    EEPROM.write(40, CoverSumOut);delay(1);  
+    EEPROM.commit();delay(1) ;
     BeLast_State  = 0x00 ;
     last_State    = 0x00 ;
     Current_State = 0x00 ;
@@ -182,19 +186,23 @@ bool  Errorback()
      return ErrorFlag ;
 }
 
-/*       Serial.print(Radarinit); 
-  Serial.print("        ");
-       Serial.print(ReferenceNum); 
-  Serial.print("        ");
-      Serial.print(BeLast_State);
-     Serial.print("    ");
-     Serial.print(last_State);
-     Serial.print("     ");
-      Serial.print(Current_State);
-      Serial.print("        ");
-       Serial.print(Lidar.distance ); 
-  Serial.print("        ");
-   Serial.print(Lidar1.distance ); 
-  Serial.print("        ");
-     Serial.println();*/
+void Key_Scan()
+{
+    buttonState = digitalRead(buttonPin);
+  if (buttonState == 0) {
+    delay(20);
+    buttonState = digitalRead(buttonPin);
+    if (buttonState == 0) {
+     Serial.println("Button pressed!");
+    CoverSumIN  = 0 ;
+    EEPROM.write(20, CoverSumIN);delay(1);  
+    EEPROM.commit();delay(1) ;
+    CoverSumOut = 0 ;
+    EEPROM.write(40, CoverSumOut);delay(1);  
+    EEPROM.commit();delay(1) ;
+    }
+    while(buttonState == 0)
+    buttonState = digitalRead(buttonPin);
+  }  
+}
 
