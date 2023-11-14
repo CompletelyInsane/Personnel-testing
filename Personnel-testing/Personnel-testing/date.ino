@@ -73,25 +73,23 @@ void getLidarData1( TF* Lidar1)
 void Action_detection()
 {
     
-    getLidarData(&Lidar);
-    getLidarData1(&Lidar1);
+    getLidarData(&Lidar);   //读雷达1数据
+    getLidarData1(&Lidar1); //读雷达2数据
 
-  // if( abs(Lidar.distance - idar1.distance ) < 5 )
-  // {
-   if( abs(Lidar.distance - Radarinit) > 5 || abs(Lidar1.distance - Radarinit1) > 5)
+   if( abs(Lidar.distance - Radarinit) > 5 || abs(Lidar1.distance - Radarinit1) > 5)  //如果和设定的测量范围的差值超过五厘米
       ReferenceNum --;
   else 
-       ReferenceNum = 100;
+       ReferenceNum = 100;     
 
 
-   if(ReferenceNum < 1)
+   if(ReferenceNum < 1)  //差值超过5厘米，每次减一，100次检查差值都超过5厘米，就更新设定的范围
     {
       Radarinit = Lidar.distance;
       Radarinit1 = Lidar1.distance;
       ReferenceNum = 100;
     }
  
-
+//根据两个雷达的被遮挡情况，分成 00 10 11 01 四种情况
   if(Lidar.distance > (Radarinit*high) && Lidar1.distance < (Radarinit1*Low) )
   { 
     State = 0x01;
@@ -109,6 +107,7 @@ void Action_detection()
     State = 0x00;
   }
 
+//  存储连续的三个状态，用于判断动作 
 
   if(State!=Current_State) //状态发生改变
   {
@@ -116,21 +115,6 @@ void Action_detection()
     last_State = Current_State;  //存储上次
     Current_State = State;       //存储当前，用作实时比较
   }
-       Serial.print(Radarinit); 
-  Serial.print("        ");
-       Serial.print(ReferenceNum); 
-  Serial.print("        ");
-      Serial.print(BeLast_State);
-     Serial.print("    ");
-     Serial.print(last_State);
-     Serial.print("     ");
-      Serial.print(Current_State);
-      Serial.print("        ");
-       Serial.print(Lidar.distance ); 
-  Serial.print("        ");
-   Serial.print(Lidar1.distance ); 
-  Serial.print("        ");
-     Serial.println();
 
 
   if (BeLast_State==0x01 && last_State == 0x11  && Current_State ==0x10)   //发生了进门动作
@@ -194,10 +178,23 @@ bool  Errorback()
          
        TIM_refer++;    
    } 
-    // Serial.print(Errornum);
-    //  Serial.print("    ");
-    //  Serial.print(Errornum1);
-    //  Serial.println();
+
      return ErrorFlag ;
 }
+
+/*       Serial.print(Radarinit); 
+  Serial.print("        ");
+       Serial.print(ReferenceNum); 
+  Serial.print("        ");
+      Serial.print(BeLast_State);
+     Serial.print("    ");
+     Serial.print(last_State);
+     Serial.print("     ");
+      Serial.print(Current_State);
+      Serial.print("        ");
+       Serial.print(Lidar.distance ); 
+  Serial.print("        ");
+   Serial.print(Lidar1.distance ); 
+  Serial.print("        ");
+     Serial.println();*/
 
