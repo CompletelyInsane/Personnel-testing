@@ -83,14 +83,14 @@ void Action_detection()
    if( abs(Lidar.distance - Lidarinit) > 5 || abs(Lidar1.distance - Lidarinit1) > 5)  //如果和设定的测量范围的差值超过五厘米
       ReferenceNum --;
   else 
-       ReferenceNum = 100;     
+       ReferenceNum = 1500;     
 
 
    if(ReferenceNum < 1)  //差值超过5厘米，每次减一，100次检查差值都超过5厘米，就更新设定的范围
     {
       Lidarinit =  Lidar.distance;
       Lidarinit1 = Lidar1.distance;
-      ReferenceNum = 100;
+      ReferenceNum = 1500;
     }
 
     Serial.print(ReferenceNum);
@@ -166,7 +166,6 @@ bool  Errorback()
               ErrorFlag = 1;
           }
         }
-       
 
         if(Lidar1.receiveComplete == false)          //接收失败
         { 
@@ -179,18 +178,7 @@ bool  Errorback()
               Display.display();  //将缓冲区写入内存
             ErrorFlag = 1;
           }
-        }
-        else
-        {
-          Errornum1 = 0;
-        }
-
-        if(Errornum == 0 && Errornum1 == 0)
-        {
-          ErrorFlag = 0;
-          ActionFlag = 1;
-        }
-         
+        } 
        TIM_refer++;    
    } 
     
@@ -202,7 +190,11 @@ bool  Errorback()
         {
           Errornum1 = 0;
         }
-
+         if(Errornum == 0 && Errornum1 == 0)
+        {
+          ErrorFlag = 0;
+          
+        }
      return ErrorFlag ;
 }
 
