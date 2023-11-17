@@ -9,8 +9,8 @@ const int buttonPin = 0;
 // 变量来存储按钮的状态
 int buttonState = 0;
 
-uint8_t   BeLast_State = 0x00,   last_State = 0x00,  Current_State = 0x00  , State  =  0x00;             //连续三次状态，上上次、上次、当前。四种状态 10、11、01、00。
-int  TIM_refer = 0 , CoverCou = 0, CoverSumIN = 0, CoverSumOut = 0,  Radarinit = 0 , Radarinit1 = 0 ,ReferenceNum = 200;
+uint8_t  ActionFlag = 1, BeLast_State = 0x00,   last_State = 0x00,  Current_State = 0x00  , State  =  0x00;             //连续三次状态，上上次、上次、当前。四种状态 10、11、01、00。
+int  TIM_refer = 0 , CoverCou = 0, CoverSumIN = 0, CoverSumOut = 0,  Lidarinit = 0 , Lidarinit1 = 0 ,ReferenceNum = 200;
 uint8_t Errornum = 0 , Errornum1 = 0; //连续错误数量
 bool ErrorFlag = 0;
 #define  high  0.95    //雷达值高于无遮挡状态的90% 算无遮挡

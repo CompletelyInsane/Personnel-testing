@@ -53,10 +53,16 @@ void loop() {
 Key_Scan();  //按键检测，数据清零
 Action_detection(); //动作检测
 
+
 if(!Errorback())  //检测错误
-   oled_display();     //oled显示
+  if( ActionFlag == 1)
+  {
+    oled_display();     //oled显示
+    ActionFlag = 0;
+  }
 
 }
+
 
 
 

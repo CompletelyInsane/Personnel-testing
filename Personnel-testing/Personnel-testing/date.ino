@@ -75,8 +75,12 @@ void Action_detection()
     
     getLidarData(&Lidar);   //读雷达1数据
     getLidarData1(&Lidar1); //读雷达2数据
+   
+   
+   
 
-   if( abs(Lidar.distance - Radarinit) > 5 || abs(Lidar1.distance - Radarinit1) > 5)  //如果和设定的测量范围的差值超过五厘米
+
+   if( abs(Lidar.distance - Lidarinit) > 5 || abs(Lidar1.distance - Lidarinit1) > 5)  //如果和设定的测量范围的差值超过五厘米
       ReferenceNum --;
   else 
        ReferenceNum = 100;     
@@ -84,25 +88,30 @@ void Action_detection()
 
    if(ReferenceNum < 1)  //差值超过5厘米，每次减一，100次检查差值都超过5厘米，就更新设定的范围
     {
-      Radarinit = Lidar.distance;
-      Radarinit1 = Lidar1.distance;
+      Lidarinit =  Lidar.distance;
+      Lidarinit1 = Lidar1.distance;
       ReferenceNum = 100;
     }
+
+    Serial.print(ReferenceNum);
+   Serial.print("  ");
+   Serial.print(Lidar1.distance);
+   Serial.println();
  
 //根据两个雷达的被遮挡情况，分成 00 10 11 01 四种情况
-  if(Lidar.distance > (Radarinit*high) && Lidar1.distance < (Radarinit1*Low) )
+  if(Lidar.distance > (Lidarinit*high) && Lidar1.distance < (Lidarinit1*Low) )
   { 
     State = 0x01;
   }
-  if(Lidar.distance < (Radarinit*Low) && Lidar1.distance < (Radarinit1*Low) )
+  if(Lidar.distance < (Lidarinit*Low) && Lidar1.distance < (Lidarinit1*Low) )
   { 
     State = 0x11;
   }
-  if(Lidar.distance < (Radarinit*Low) && Lidar1.distance > (Radarinit1*high) )
+  if(Lidar.distance < (Lidarinit*Low) && Lidar1.distance > (Lidarinit1*high) )
   { 
     State = 0x10;
   }
-   if(Lidar.distance > (Radarinit*high) && Lidar1.distance > (Radarinit1*high) )
+   if(Lidar.distance > (Lidarinit*high) && Lidar1.distance > (Lidarinit1*high) )
   { 
     State = 0x00;
   }
@@ -125,6 +134,7 @@ void Action_detection()
     BeLast_State  = 0x00 ;
     last_State    = 0x00  ;
     Current_State = 0x00;
+    ActionFlag = 1 ;
   }
 
   if (BeLast_State==0x10 && last_State == 0x11  && Current_State ==0x01)   //发生了出门动作
@@ -135,6 +145,7 @@ void Action_detection()
     BeLast_State  = 0x00 ;
     last_State    = 0x00 ;
     Current_State = 0x00 ;
+    ActionFlag = 1 ;
   }
 }
 
@@ -149,24 +160,21 @@ bool  Errorback()
           if(Errornum>3) //两秒未检测到雷达
           {
               
-              Serial.println();
-             
+               Display.clear();
               Display.drawString(0, 20, "Lidar1 Error");  //X,Y,内容
               Display.display();  //将缓冲区写入内存
               ErrorFlag = 1;
           }
         }
-        else
-        {
-          Errornum = 0;
-        }
+       
 
         if(Lidar1.receiveComplete == false)          //接收失败
         { 
           Errornum1++;
           if(Errornum1>3) //两秒未检测到雷达
           { 
-              
+              if(Errornum<=3) //两秒未检测到雷达
+                  Display.clear();
               Display.drawString(0, 40, "Lidar2 Error");  //X,Y,内容
               Display.display();  //将缓冲区写入内存
             ErrorFlag = 1;
@@ -178,10 +186,22 @@ bool  Errorback()
         }
 
         if(Errornum == 0 && Errornum1 == 0)
+        {
           ErrorFlag = 0;
+          ActionFlag = 1;
+        }
          
        TIM_refer++;    
    } 
+    
+      if(Lidar.receiveComplete == true) 
+        {
+          Errornum = 0;
+        }
+        if(Lidar1.receiveComplete == true) 
+        {
+          Errornum1 = 0;
+        }
 
      return ErrorFlag ;
 }
