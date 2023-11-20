@@ -158,8 +158,7 @@ bool  Errorback()
         { 
           Errornum++;
           if(Errornum>3) //两秒未检测到雷达
-          {
-              
+          {            
                Display.clear();
               Display.drawString(0, 20, "Lidar1 Error");  //X,Y,内容
               Display.display();  //将缓冲区写入内存
@@ -186,13 +185,15 @@ bool  Errorback()
         {
           Errornum = 0;
         }
-        if(Lidar1.receiveComplete == true) 
+      if(Lidar1.receiveComplete == true) 
         {
           Errornum1 = 0;
         }
-         if(Errornum == 0 && Errornum1 == 0)
+      if(Errornum == 0 && Errornum1 == 0)
         {
-          ErrorFlag = 0;
+         if(ErrorFlag == 1)
+            oled_display();   
+         ErrorFlag = 0;
           
         }
      return ErrorFlag ;
