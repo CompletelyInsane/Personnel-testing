@@ -75,22 +75,17 @@ void Action_detection()
     
     getLidarData(&Lidar);   //读雷达1数据
     getLidarData1(&Lidar1); //读雷达2数据
-   
-   
-   
-
 
    if( abs(Lidar.distance - Lidarinit) > 5 || abs(Lidar1.distance - Lidarinit1) > 5)  //如果和设定的测量范围的差值超过五厘米
       ReferenceNum --;
   else 
-       ReferenceNum = 1500;     
-
+      ReferenceNum = ReferenceNumVal;     
 
    if(ReferenceNum < 1)  //差值超过5厘米，每次减一，100次检查差值都超过5厘米，就更新设定的范围
     {
       Lidarinit =  Lidar.distance;
       Lidarinit1 = Lidar1.distance;
-      ReferenceNum = 1500;
+      ReferenceNum = ReferenceNumVal;
     }
 
     Serial.print(ReferenceNum);
