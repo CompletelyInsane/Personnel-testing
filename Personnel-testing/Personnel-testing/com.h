@@ -5,7 +5,7 @@
 */
 
 // 定义按钮所连接的数字引脚
-const int buttonPin = 0;
+const int buttonPin = 0,LED_PIN = 35;
 // 变量来存储按钮的状态
 int buttonState = 0;
 

@@ -23,7 +23,7 @@ void setup() {
  Serial2.begin(115200, SERIAL_8N1, 45, 46);             //开启串口2 用作雷达数据读取
  EEPROM.begin(4096);                                    //申请空间，传入参数为size，为需要读写的数据字节最大地址+1，取值1~4096； 
  pinMode(buttonPin, INPUT);
-
+ pinMode(LED_PIN, OUTPUT);
    /*TIM_init*/
   Timer = timerBegin(0, 80, true);             //设置定时器0，80分频，定时器是否上下计数
   timerAttachInterrupt(Timer, onTimer, true);  //定时器地址指针，中断函数，触发类型
@@ -44,7 +44,7 @@ void setup() {
     
   CoverSumIN  = EEPROM.read(20) ;
   CoverSumOut = EEPROM.read(40) ;
-
+  digitalWrite(LED_PIN, LOW);
 }
 
 void loop() {
