@@ -214,6 +214,7 @@ void Key_Scan()
     CoverSumOut = 0 ;
     EEPROM.write(40, CoverSumOut);delay(1);  
     EEPROM.commit();delay(1) ;
+     ActionFlag = 1 ;
     }
     while(buttonState == 0)
     buttonState = digitalRead(buttonPin);
