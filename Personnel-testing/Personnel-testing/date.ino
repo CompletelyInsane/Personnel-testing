@@ -69,7 +69,10 @@ void getLidarData1( TF* Lidar1)
     }
 } 
 
-
+/*
+void Action_detection()
+功能：检测是否发生进或者出的动作，并计数
+*/
 void Action_detection()
 {
     
@@ -150,6 +153,11 @@ void Action_detection()
   }
 }
 
+/*
+bool  Errorback()
+功能：检查雷达是否正常接收数据，一秒检查一次超过三秒接收不到则报错
+返回：错误1 ，正确0
+*/
 
 bool  Errorback()
 {
@@ -200,6 +208,11 @@ bool  Errorback()
      return ErrorFlag ;
 }
 
+
+/*
+void Key_Scan()
+功能：按键扫描，摁下按键清空EEPROM保存的数据
+*/
 void Key_Scan()
 {
     buttonState = digitalRead(buttonPin);

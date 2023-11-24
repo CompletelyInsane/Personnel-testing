@@ -15,7 +15,7 @@ uint8_t Errornum = 0 , Errornum1 = 0; //连续错误数量
 bool ErrorFlag = 0;
 #define  ReferenceNumVal  2000 //连续检测多少次才更新检测范围
 #define  high  0.90    //雷达值高于无遮挡状态的90% 算无遮挡
-#define  Low   0.85    //雷达值低于无遮挡状态的70% 算有遮挡
+#define  Low   0.85    //雷达值低于无遮挡状态的85% 算有遮挡
 
 //雷达数据结构体
  struct TF{
