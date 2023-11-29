@@ -4,10 +4,9 @@
 # 一.前言
 
    应用场景：在超市、图书馆、地铁等公共区域，需要对不同出入通道人流量进行统计，需要考虑成本问题以及隐私性，只需要统计出入流量，不搜集其他信息。 统计主要通道出入口客流量和流动方向，辅助优化门店布局，客流疏导等，统计门店各区域客流量，辅助分析区域繁忙度与商品吸引度，优化人员调度、商品陈列、广告位设置、商品备货预测等，相较于人脸识别摄像头，不会采集人脸图像，有效保护个人隐私，规避隐私投诉风险。
+   
 
-
-
-![](vx_images/250983010249582.png =330x)
+![](vx_images/267044310231170.png)
 ![](vx_images/492624309249584.png )
 ![](vx_images/27564409237451.png )
 
@@ -301,7 +300,7 @@ void loop() {
 
 # 五.工程代码烧录
 ## 1.工程代码烧录
-完整工程GIthub仓库：[Personnel-testing.git](https://github.com/CompletelyInsane/Personnel-testing.git)
+完整工程GIthub仓库：[BW_PeopleCounting_ESP32.git](https://github.com/benewake-zoran/BW_PeopleCounting_ESP32.git)
 >1. 下载工程
 ![](vx_images/286393711231161.png )
 >2. 下载解压，进入目录 
