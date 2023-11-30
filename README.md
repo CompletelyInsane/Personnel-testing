@@ -300,7 +300,7 @@ void loop() {
 
 # 五.工程代码烧录
 ## 1.工程代码烧录
-完整工程GIthub仓库：[Personnel-testing.git](https://github.com/CompletelyInsane/Personnel-testing.git)
+完整工程GIthub仓库：[BW_PeopleCounting_ESP32.git](https://github.com/benewake-zoran/BW_PeopleCounting_ESP32.git)
 >1. 下载工程
 ![](vx_images/286393711231161.png )
 >2. 下载解压，进入目录 
